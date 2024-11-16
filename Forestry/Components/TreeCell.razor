@@ -1,10 +1,14 @@
-﻿<img class="@bg" src="@_Sprite" alt="@_AltText" />
+﻿<img class="@bg" src="@_Sprite" alt="@_AltText" @onclick="ClickCell" />
 
 @code {
   [Parameter]
   public required int age { get; set; }
   [Parameter]
   public required string bg { get; set; }
+  [Parameter]
+  public required (int row, int col) coords { get; set; }
+  [Parameter]
+  public EventCallback<(int row, int col,int newVal)> Clicked { get; set; }
 
   private string _Sprite;
   private string _AltText;
@@ -39,5 +43,16 @@
     }
   }
 
+  async private Task ClickCell()
+  {
+    if (age == 0) {
+      await Clicked.InvokeAsync((coords.row, coords.col, 1));
+    }
+    else if (age == 3 || age == 4) {
+      await Clicked.InvokeAsync((coords.row, coords.col, 0));
+    }
+  }
+
   protected override void OnInitialized() => RenderTree();
+  protected override void OnParametersSet() => RenderTree();
 }
