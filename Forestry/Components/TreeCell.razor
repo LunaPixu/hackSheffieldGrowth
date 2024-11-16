@@ -1,0 +1,39 @@
+﻿<img class="@bg" src="@_Sprite" alt="@_AltText" />
+
+@code {
+  [Parameter]
+  public required int age { get; set; }
+  [Parameter]
+  public required string bg { get; set; }
+
+  private string _Sprite;
+  private string _AltText;
+
+  private void RenderTree()
+  {
+    switch (age) {
+      case 1:
+        _Sprite = "/images/seed.png";
+        _AltText = "Seed";
+        break;
+      case 2:
+        _Sprite = "/images/sapling.png";
+        _AltText = "Sapling";
+        break;
+      case 3:
+        _Sprite = "/images/tree.png";
+        _AltText = "Tree";
+        break;
+      case 4:
+        _Sprite = "/images/dead.png";
+        _AltText = "Dead Tree";
+        break;
+      case 0: default:
+        _Sprite = "/images/empty.png";
+        _AltText = "Empty Space";
+        break;
+    }
+  }
+
+  protected override void OnInitialized() => RenderTree();
+}
