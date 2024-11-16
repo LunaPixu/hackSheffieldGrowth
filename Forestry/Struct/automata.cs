@@ -5,9 +5,16 @@ using System.Drawing;
 
 namespace Automata;
 
-struct Cell(int type)
+/// <summary>
+/// One cell in 
+/// </summary>
+/// <param name="type">Type to default the cell to.</param>
+/// <param name="age">Current age of cell (default 0)</param>
+partial struct Cell(int type, int age = 0)
 {
-	public int Type = type;
+	private int _type = type;
+	public int Type { readonly get {return _type;} set { Lifespan = 0; _type=value; }}
+	public int Lifespan = age;
 
 	static Random r = new(); // bad practice hacky ultra power explosion
 	public override readonly int GetHashCode()
@@ -26,24 +33,28 @@ struct Cell(int type)
 		return Type == cell.Type;
 	}
 
-	public readonly Cell React(Cell[] Ring) {
-
+	public Cell React(Cell[] Ring) {
+		Lifespan++;
 		int shade = 0;
 		foreach (Cell v in Ring) {
-			/* if (Type > 0 && v.Type == -1) {
+			if (Type > 0 && v.Type == -1) {
 				return new(0);
-			} */
+			}
 			if (v.Type == 4) {
+				// There is a tall (type 4) cell nearby, casting shade.
 				shade ++;
 			}
 		}
 		if (Type == 0) {
-			if (shade > 0) return r.NextDouble() > .9 ? this : new(1);
+			if (shade > 0) return r.NextDouble() > .05 ? this : new(1);
 			else return this;
 		}
-		if (Type == -1) return Next;
-		else if (shade >= 7) return new(-1);
-		else if (shade >= 3) return this;
+		else if (Type == -1) {
+			if (shade <= 2) return new(2);
+			else return Next;
+		}
+		else if (shade >= 7 || Lifespan >= 4) return new(-1); // Old/too shaded cells will die, becoming type -1.
+		else if (shade >= 3) return this; // Moderately shaded 
 		else return Next;
 	}
 
@@ -73,6 +84,7 @@ struct Cell(int type)
 	}
 
 	readonly public Cell Next {get {
+		// Returns the 
 		switch (Type) {
 			case 0: return new(0);
 			case 1: return new(2);
@@ -87,10 +99,15 @@ struct Cell(int type)
 	public static Cell Empty = new(0);
 }
 
-class CellGrid
+/// <summary>
+/// Array of cells (CellGrid.Grid) with additional helper functions facilitating automata passes on the data.
+/// </summary>
+partial class CellGrid
 {
+	/// <summary>
+	/// Internal data of the cell grid.
+	/// </summary>
 	public Cell[,] Grid;
-
 	readonly int _sizx;
 	readonly int _sizy;
 	public (int x, int y) Size { get { return (_sizx, _sizy); } }
@@ -119,9 +136,8 @@ class CellGrid
 		return o;
 	}
 
-	public string ToText() {
-		return ToText((v) => { return v.ToChar(); });
-	}
+	// this line looks awful but perfectly describes what is being done
+	public string ToText() => ToText((v) => { return v.ToChar(); });
 
 	public override int GetHashCode()
 	{
@@ -134,21 +150,34 @@ class CellGrid
 		return o.ToHashCode();
 	}
 
+	/// <summary>
+	/// Collects adjacent cells to this position in the form of an array.
+	/// Out of bounds will be represented by Cell.Empty.
+	/// </summary>
+	/// <param name="i">The i (aka x) coordinate to fetch the adjacency from.</param>
+	/// <param name="j">The j (aka y) coordinate to fetch the adjacency from.</param>
+	/// <returns>
+	/// Array of cells in clockwise arrangment from north:
+	/// [N,NE,E,SE,S,SW,W,NW]
+	/// </returns>
 	public Cell[] Adjacency(int i, int j)
 	{
 		Cell[] o = new Cell[8];
 		(int x, int y)[] positions = [ (0,1), (1,1), (1,0), (1,-1), (0,-1), (-1,-1), (-1,0), (-1,1) ];
 		for (int k = 0; k < 8; k++) {
 			if (
-				i+positions[k].x >= 0 && i+positions[k].x < Size.x &&
-				j+positions[k].y >= 0 && j+positions[k].y < Size.y
+				i-positions[k].x >= 0 && i-positions[k].x < Size.x &&
+				j-positions[k].y >= 0 && j-positions[k].y < Size.y
 				)
-				o[k] = Grid[i+positions[k].x, j+positions[k].y];
-			else o[k] = new(0);
+				o[k] = Grid[i-positions[k].x, j-positions[k].y];
+			else o[k] = Cell.Empty;
 		}
 		return o;
 	}
 
+	/// <summary>
+	/// Run one pass of the cell's automata on this data. Operates upon the data itself.
+	/// </summary>
 	public void Automata()
 	{
 		Cell[,] buffer = (Cell[,])Grid.Clone();
