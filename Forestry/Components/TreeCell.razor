@@ -45,14 +45,15 @@
 
   async private Task ClickCell()
   {
-    if (age == 0) {
+    if (age == 0) { // If cell is empty, signal to plant a seed
       await Clicked.InvokeAsync((coords.row, coords.col, 1));
     }
-    else if (age == 3 || age == 4) {
+    else if (age == 3 || age == 4) { // If cell has a proper tree, signal to chop it down
       await Clicked.InvokeAsync((coords.row, coords.col, 0));
     }
   }
 
+  // When initialised or updated from main page, render
   protected override void OnInitialized() => RenderTree();
   protected override void OnParametersSet() => RenderTree();
 }

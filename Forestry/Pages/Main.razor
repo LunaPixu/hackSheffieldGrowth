@@ -5,15 +5,20 @@
 <PageTitle>Home</PageTitle>
 
 @code {
+    // If valid cell was clicked, update it
+    // Values are passed from the clicked cell to this method
+    // col and row are used to identify the clicked cell
     private void ClickCell((int row, int col, int newVal) value)
     {
         Cells.Grid[value.row, value.col].Type = value.newVal;
     }
 
+    // Initialise grid. This only happens on page load at fixed size atm. All sizes are supported (though really large sizes may not fit well).
     static int gridSize = 10;
     CellGrid Cells = new((gridSize, gridSize));
     static int pxGridSize = gridSize * 80;
 
+    // When next button is clicked, step through cell automata
     private void NextStep() => Cells.Automata();
 }
 <div class="cell-grid" style="width: @(pxGridSize + "px")">
