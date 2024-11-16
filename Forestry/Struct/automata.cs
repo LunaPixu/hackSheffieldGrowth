@@ -6,17 +6,19 @@ using System.Drawing;
 namespace Automata;
 
 /// <summary>
-/// One cell in 
+/// One cell as part of an automata meant to simulate some digital forestry.
 /// </summary>
 /// <param name="type">Type to default the cell to.</param>
 /// <param name="age">Current age of cell (default 0)</param>
 partial struct Cell(int type, int age = 0)
 {
-	private int _type = type;
+	private int _type = type; // Current state (type) of this cell.
 	public int Type { readonly get {return _type;} set { Lifespan = 0; _type=value; }}
-	public int Lifespan = age;
+	public int Lifespan = age; // Amount of iterations that have passed without the type of the cell changing.
 
-	static Random r = new(); // bad practice hacky ultra power explosion
+	// Static random number generation used by this struct
+	static readonly Random r = new(); // bad practice hacky ultramarine powertool ventricule explosion
+
 	public override readonly int GetHashCode()
 	{
 		return Type;
@@ -33,6 +35,11 @@ partial struct Cell(int type, int age = 0)
 		return Type == cell.Type;
 	}
 
+	/// <summary>
+	/// Method returning the resultant cell after having reacted to the adjacent ring of cells.
+	/// </summary>
+	/// <param name="Ring">Ring of cells adjacent to this one.</param>
+	/// <returns>Reactionary cell.</returns>
 	public Cell React(Cell[] Ring) {
 		Lifespan++;
 		int shade = 0;
@@ -58,6 +65,10 @@ partial struct Cell(int type, int age = 0)
 		else return Next;
 	}
 
+	/// <summary>
+	/// Specialty method to convert these particular cells to characters (used in CellGrid.ToString())
+	/// </summary>
+	/// <returns>Character representing state of this cell.</returns>
 	public readonly char ToChar()
 	{
 		// ⊢⊣⊤⊥
@@ -73,6 +84,10 @@ partial struct Cell(int type, int age = 0)
 		}
 	}
 
+	/// <summary>
+	/// Alternate ToChar retuning block symbols.
+	/// </summary>
+	/// <returns>Character representing state of this cell.</returns>
 	public readonly char ToBlock() {
 		switch (Type) {
 			case 1: return '░';
@@ -83,8 +98,9 @@ partial struct Cell(int type, int age = 0)
 		}
 	}
 
+
 	readonly public Cell Next {get {
-		// Returns the 
+		// Returns the next logical step in the cell cycle.
 		switch (Type) {
 			case 0: return new(0);
 			case 1: return new(2);
@@ -123,6 +139,11 @@ partial class CellGrid
 		return ToText();
 	}
 
+	/// <summary>
+	/// Convert the cells in the grid to a textual representation (prints nicely on console)
+	/// </summary>
+	/// <param name="ToChar">Parser to use to convert each cell to a character.</param>
+	/// <returns>Stringified grid.</returns>
 	public string ToText( Func<Cell, char> ToChar ) {
 		string o = "";
 		for (int i = 0; i < Size.x; i++)
@@ -176,7 +197,7 @@ partial class CellGrid
 	}
 
 	/// <summary>
-	/// Run one pass of the cell's automata on this data. Operates upon the data itself.
+	/// Run one pass of the cell's automata on this data. Operates upon the data contained itself.
 	/// </summary>
 	public void Automata()
 	{
