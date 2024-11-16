@@ -124,3 +124,27 @@ code {
 .light-cell {
   background-color: #0c7500;
 }
+
+.cell-grid {
+    margin: 0 auto;
+}
+
+button {
+    margin: 1em;
+    padding: 1em;
+    border: 2px solid black;
+    border-radius: 10px;
+}
+
+button:hover {
+    background-color: #bbbbbb;
+}
+
+button:active {
+    background-color: #888888;
+}
+
+.important-button {
+    display: block;
+    margin: 1em auto;
+}

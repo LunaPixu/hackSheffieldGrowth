@@ -12,12 +12,13 @@
 
     static int gridSize = 10;
     CellGrid Cells = new((gridSize, gridSize));
+    static int pxGridSize = gridSize * 80;
 
     private void NextStep() => Cells.Automata();
 }
-<div class="cell-grid">
+<div class="cell-grid" style="width: @(pxGridSize + "px")">
 @for (int i = 0; i < Cells.Grid.GetLength(0); i++) {
-    <div>
+    <div style="width: auto">
         @for (int j = 0; j < Cells.Grid.GetLength(1); j++) {
             (int row, int col) coords = (i, j);
             string bg;
