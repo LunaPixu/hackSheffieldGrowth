@@ -8,9 +8,9 @@
     // If valid cell was clicked, update it
     // Values are passed from the clicked cell to this method
     // col and row are used to identify the clicked cell
-    private void ClickCell((int row, int col, int newVal) value)
+    private void ClickCell((int row, int col, int newVal) cell)
     {
-        Cells.Grid[value.row, value.col].Type = value.newVal;
+        Cells.Grid[cell.row, cell.col].Type = cell.newVal;
     }
 
     // Initialise grid. This only happens on page load at fixed size atm. All sizes are supported (though really large sizes may not fit well).
@@ -21,22 +21,26 @@
     // When next button is clicked, step through cell automata
     private void NextStep() => Cells.Automata();
 }
+
+<!-- Render grid, set grid container width so it properly centers in browser -->
 <div class="cell-grid" style="width: @(pxGridSize + "px")">
 @for (int i = 0; i < Cells.Grid.GetLength(0); i++) {
     <div style="width: auto">
         @for (int j = 0; j < Cells.Grid.GetLength(1); j++) {
             (int row, int col) coords = (i, j);
             string bg;
-            if ((i + j) % 2 == 0) {
+            if ((i + j) % 2 == 0) { // Checkerboard pattern
                 bg = "dark-cell";
             } else {
                 bg = "light-cell";
             }
+            <!-- Init and render cell -->
             <TreeCell age="@Cells.Grid[i,j].Type" bg="@bg" coords="@coords" Clicked=@ClickCell/>
         }
     </div>
 }
 </div>
+
 <button class="important-button" @onclick="NextStep">Next Step</button>
 <p>
     Welcome to Forestry Automata. A celluar automata but with trees!<br />

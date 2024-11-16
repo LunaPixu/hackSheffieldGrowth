@@ -10,39 +10,39 @@
     [Parameter]
     public EventCallback<(int row, int col,int newVal)> Clicked { get; set; }
 
-    private string _Sprite;
-    private string _AltText;
+    private string _Sprite = "/images/empty.png";
+    private string _AltText = "Empty Space";
     private string _CursorPoint = "default";
 
     private void RenderTree()
     {
         switch (age) {
-            case 1:
+            case 1: // seed
                 _Sprite = "/images/seed.png";
                 _AltText = "Seed";
                 _CursorPoint = "default";
                 break;
-            case 2:
+            case 2: // sapling
                 _Sprite = "/images/sapling.png";
                 _AltText = "Sapling";
                 _CursorPoint = "default";
                 break;
-            case 3:
+            case 3: // immature
                 _Sprite = "/images/immature.png";
                 _AltText = "Immature Tree";
                 _CursorPoint = "pointer";
                 break;
-            case 4:
+            case 4: // mature
                 _Sprite = "/images/tree.png";
                 _AltText = "Tree";
                 _CursorPoint = "pointer";
                 break;
-            case -1:
+            case -1: // dead
                 _Sprite = "/images/dead.png";
                 _AltText = "Dead Tree";
                 _CursorPoint = "default";
                 break;
-            case 0: default:
+            case 0: default: // empty or anomalous
                 _Sprite = "/images/empty.png";
                 _AltText = "Empty Space";
                 _CursorPoint = "pointer";
@@ -60,7 +60,7 @@
     }
   }
 
-  // When initialised or updated from main page, render
+  // When initialised or updated from parent component, render
   protected override void OnInitialized() => RenderTree();
   protected override void OnParametersSet() => RenderTree();
 }
