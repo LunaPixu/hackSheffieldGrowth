@@ -116,3 +116,11 @@ code {
 .logo {
     margin: 0 0.5em;
 }
+
+.dark-cell {
+  background-color: #074800;
+}
+  
+.light-cell {
+  background-color: #0c7500;
+}
