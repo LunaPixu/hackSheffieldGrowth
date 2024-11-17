@@ -148,3 +148,7 @@ button:active {
     display: block;
     margin: 1em auto;
 }
+
+.grid-contents {
+    margin: 0.5em auto;
+}

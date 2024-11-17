@@ -1,0 +1,79 @@
+﻿@using Automata;
+
+@code {
+    [Parameter]
+    public int cols {
+        get { return _Cols; }
+        set {
+            // Don't allow impossible grids
+            if (value < 1) _Cols = 4;
+            else _Cols = value;
+        }
+    }
+    [Parameter]
+    public int rows {
+        get { return _Rows; }
+        set
+        {
+            // Don't allow impossible grids
+            if (value < 1) _Rows = 4;
+            else _Rows = value;
+        }
+    }
+
+    // If no sizes were passed to component, default to 10.
+    private int _Cols = 10;
+    private int _Rows = 10;
+
+    private CellGrid Cells;
+    private int pxGridWidth;
+
+    // Initialise grid on component load. All sizes are supported (though really large sizes may not fit well).
+    protected override void OnInitialized() => GenerateGrid();
+
+    // Generate grid and call component refresh
+    public void GenerateGrid() {
+        Cells = new((rows, cols));
+        pxGridWidth = cols * 80;
+        StateHasChanged();
+    }
+
+
+
+    // If valid cell was clicked, update it
+    // Values are passed from the clicked cell to this method
+    // col and row are used to identify the clicked cell
+    private void ClickCell((int row, int col, int newVal) cell)
+    {
+        Cells.Grid[cell.row, cell.col].Type = cell.newVal;
+    }
+
+    // When next button is clicked, step through cell automata
+    private void NextStep() => Cells.Automata();
+}
+
+<!-- Render grid, set grid container width so it properly centers in browser -->
+<div class="cell-grid" style="width: @(pxGridWidth + "px")">
+    @for (int i = 0; i < Cells.Grid.GetLength(0); i++)
+    {
+        <div style="width: auto">
+            @for (int j = 0; j < Cells.Grid.GetLength(1); j++)
+            {
+                (int row, int col) coords = (i, j);
+                string bg;
+                if ((i + j) % 2 == 0)
+                { // Checkerboard pattern
+                    bg = "dark-cell";
+                }
+                else
+                {
+                    bg = "light-cell";
+                }
+                <!-- Init and render cell -->
+                <TreeCell age="@Cells.Grid[i,j].Type" bg="@bg" coords="@coords" Clicked=@ClickCell />
+            }
+        </div>
+    }
+</div>
+
+<button class="important-button" @onclick="NextStep">Next Step</button>
