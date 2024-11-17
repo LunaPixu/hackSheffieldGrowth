@@ -14,13 +14,13 @@
 }
 
 <PageTitle>Home</PageTitle>
-<div class="grid-controls">
-    <span>Width: </span>
-    <input type="number" name="cols" @bind="cols" min="1"/>
-    <span>Height: </span>
-    <input type="number" name="rows" @bind="rows" min="1"/>
-    <button @onclick="GenerateGrid">Generate Grid</button>
-</div>
+<form class="grid-controls" onsubmit="@GenerateGrid">
+    <label for="cols">Width: </label>
+    <input type="number" name="cols" @bind="cols" min="1" step="1" required/>
+    <label for="rows">Height: </label>
+    <input type="number" name="rows" @bind="rows" min="1" step="1" required/>
+    <button>Generate Grid</button>
+</form>
 <ForestryAutomata @ref=automataGrid rows="@rows" cols="@cols"/>
 <p>
     Welcome to Forestry Automata. A celluar automata but with trees!<br />
