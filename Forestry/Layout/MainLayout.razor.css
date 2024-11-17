@@ -8,9 +8,10 @@ main {
     flex: 1;
 }
 
-.sidebar {
+/* The sidebar is deprecated and not in use. */
+/* .sidebar {
     background-image: linear-gradient(180deg, rgb(190, 114, 0) 0%, #4d3501 70%);
-}
+} */
 
 .top-row {
     background-image: linear-gradient(315deg, rgb(190, 114, 0) 0%, rgb(157, 94, 0) 70%);
@@ -19,12 +20,23 @@ main {
     height: 3.5rem;
     display: flex;
     align-items: center;
+
+	/* Additional stylings to improve textual data in the topbar. */
+	font-weight: 800;
+	color: white;
+	padding: 8px;
+
+	h1 {
+		padding: 8px;
+	}
 }
 
     .top-row ::deep a, .top-row ::deep .btn-link {
         white-space: nowrap;
         margin-left: 1.5rem;
         text-decoration: none;
+
+		color: white;
     }
 
     .top-row ::deep a:hover, .top-row ::deep .btn-link:hover {
@@ -35,20 +47,16 @@ main {
         overflow: hidden;
         text-overflow: ellipsis;
     }
-/* Changed max width to convey new design. */
 
-@media (max-width: 99999px) {
-    .top-row {
+/* Changed min width to convey new design. */
+@media (min-width: 0px) {
+	.top-row {
         justify-content: space-between;
     }
 
     .top-row ::deep a, .top-row ::deep .btn-link {
         margin-left: 0;
     }
-}
-
-/* Changed min width to convey new design. */
-@media (min-width: 0px) {
     .page {
         flex-direction: row;
     }
